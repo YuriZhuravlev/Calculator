@@ -6,6 +6,7 @@ import java.util.*
  * Use '+', '-', '×', '÷'
  */
 object Calculator {
+    private fun unaryMinus(p1: Double): Double = -p1
     private fun add(p1: Double, p2: Double): Double = p2 + p1
     private fun sub(p1: Double, p2: Double): Double = p2 - p1
     private fun mul(p1: Double, p2: Double): Double = p2 * p1
@@ -23,11 +24,12 @@ object Calculator {
         '+' to 0,
         '-' to 0,
         '×' to 1,
-        '÷' to 1
+        '÷' to 1,
+        '~' to 2        // unary minus
     )
 
     fun calculate(expression: String): String {
-        val (exprRPN, map) = getRPN(expression)
+        val (exprRPN, map) = getRPN(parseUnaryMinus(expression))
         val stack = Stack<Double>()
         var i = -1
 
@@ -38,6 +40,7 @@ object Calculator {
                     '-' -> stack.push(sub(stack.pop(), stack.pop()))
                     '×' -> stack.push(mul(stack.pop(), stack.pop()))
                     '÷' -> stack.push(div(stack.pop(), stack.pop()))
+                    '~' -> stack.push(unaryMinus(stack.pop()))
                     in map.keys -> stack.push(map[exprRPN[i]])
                     else -> throw Exception("Error, received (${exprRPN[i]},$i) in expression $exprRPN\nMap of vars ${map.toString()}")
                 }
@@ -51,6 +54,21 @@ object Calculator {
         }
     }
 
+    private fun parseUnaryMinus(expression: String): String {
+        val str = StringBuilder(expression)
+
+        var lastOperation = true
+        for (i in 0..(str.lastIndex)) {
+            if (lastOperation && str[i] == '-') {
+                str[i] = '~'
+            } else {
+                lastOperation = str[i] !in numberSet
+            }
+        }
+
+        return str.toString()
+    }
+
 
     private fun getRPN(expression: String): Pair<String, Map<Char, Double>> {
         val variables = mutableMapOf<Char, Double>()
@@ -60,8 +78,7 @@ object Calculator {
 
         var i = -1
         while (++i < expression.length) {
-            val token = expression[i]
-            when (token) {
+            when (val token = expression[i]) {
                 '(' -> stack.push(token)
                 ')' -> {
                     // удаление скобки соответствующей текущей закрывающей скобке

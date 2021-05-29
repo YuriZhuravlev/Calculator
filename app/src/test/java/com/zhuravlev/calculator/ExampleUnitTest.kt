@@ -73,4 +73,24 @@ class ExampleUnitTest {
     fun checkCalculator10() {
         assertEquals(Calculator.calculate("(((((((1+1)))))))"), 2.0.toString())
     }
+
+    @Test
+    fun checkCalculator11() {
+        assertEquals(Calculator.calculate("-5"), (-5.0).toString())
+    }
+
+    @Test
+    fun checkCalculator12() {
+        assertEquals(Calculator.calculate("-(5-(-2))"), (-7.0).toString())
+    }
+
+    @Test
+    fun checkCalculator13() {
+        assertEquals(Calculator.calculate("-(-5)"), (5.0).toString())
+    }
+
+    @Test
+    fun checkCalculator14() {
+        assertEquals(Calculator.calculate("-(-(-(-(-(-5)))))"), (5.0).toString())
+    }
 }
