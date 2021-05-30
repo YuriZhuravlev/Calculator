@@ -1,14 +1,15 @@
 package com.zhuravlev.calculator.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewModelScope
+import com.zhuravlev.calculator.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,10 +39,10 @@ fun CalculatorView(calculatorViewModel: CalculateViewModel) {
 fun Keyboard() {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(Modifier.weight(1f, true)) {
-            ButtonInput('C', modifier = Modifier.weight(1f))
+            ButtonClear(modifier = Modifier.weight(1f))
             ButtonInput('÷', modifier = Modifier.weight(1f))
             ButtonInput('×', modifier = Modifier.weight(1f))
-            ButtonInput('D', modifier = Modifier.weight(1f)) // TODO DELETE
+            ButtonBackspace(modifier = Modifier.weight(1f))
         }
         Row(Modifier.weight(1f, true)) {
             ButtonInput('7', modifier = Modifier.weight(1f))
@@ -89,6 +90,30 @@ fun ButtonInput(c: Char, modifier: Modifier = Modifier) {
         shape = RectangleShape
     ) {
         Text("$c")
+    }
+}
+
+@Composable
+fun ButtonBackspace(modifier: Modifier = Modifier) {
+    OutlinedButton(
+        modifier = modifier.fillMaxSize(), onClick = { },
+        shape = RectangleShape
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_backspace),
+            contentDescription = "backspace",
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+        )
+    }
+}
+
+@Composable
+fun ButtonClear(modifier: Modifier = Modifier) {
+    OutlinedButton(
+        modifier = modifier.fillMaxSize(), onClick = { },
+        shape = RectangleShape
+    ) {
+        Text("C")
     }
 }
 
