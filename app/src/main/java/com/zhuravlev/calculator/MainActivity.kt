@@ -8,6 +8,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.zhuravlev.calculator.ui.CalculateViewModel
+import com.zhuravlev.calculator.ui.CalculatorView
 import com.zhuravlev.calculator.ui.theme.CalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +19,7 @@ class MainActivity : ComponentActivity() {
             CalculatorTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    CalculatorView(CalculateViewModel())
                 }
             }
         }

@@ -18,6 +18,7 @@ object Calculator {
     }
 
     private fun Char.parseDouble(): Double = (toDouble() - 48.0)
+    val operations = setOf('+', '-', '×', '÷')
     private const val varSet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKZXCVBNM"
     private const val numberSet = "0123456789."
     private val priority = mapOf<Char, Int>(
