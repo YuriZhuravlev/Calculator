@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.ui.tooling.preview.Preview
 import com.zhuravlev.calculator.ui.CalculateViewModel
 import com.zhuravlev.calculator.ui.CalculatorView
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     private val viewModel: CalculateViewModel by viewModels()
 
+    @ExperimentalComposeApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

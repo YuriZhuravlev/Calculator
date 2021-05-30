@@ -1,30 +1,39 @@
 package com.zhuravlev.calculator.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.zhuravlev.calculator.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+private const val fontSizeButton = 30f
+
+@ExperimentalComposeApi
 @Composable
 fun CalculatorView(calculatorViewModel: CalculateViewModel) {
     val inputText by calculatorViewModel.inputState.collectAsState()
     val outputString by calculatorViewModel.outputState.collectAsState()
 
     Column() {
-        Surface(modifier = Modifier.fillMaxHeight(0.33f)) {
-            OutputView(
-                inputText,
-                outputString
-            )
-        }
+        OutputView(
+            modifier = Modifier.fillMaxHeight(0.33f),
+            inputText,
+            outputString
+        )
         Keyboard(onInput = { char ->
             calculatorViewModel.viewModelScope.launch {
                 calculatorViewModel.input(char)
@@ -41,6 +50,7 @@ fun CalculatorView(calculatorViewModel: CalculateViewModel) {
     }
 }
 
+@ExperimentalComposeApi
 @Composable
 fun Keyboard(onInput: (char: Char) -> Job, onClear: () -> Job, onBackspace: () -> Job) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -81,13 +91,15 @@ fun Keyboard(onInput: (char: Char) -> Job, onClear: () -> Job, onBackspace: () -
     }
 }
 
+@ExperimentalComposeApi
 @Composable
 fun ButtonInput(c: Char, modifier: Modifier = Modifier, onCLick: (char: Char) -> Job) {
     OutlinedButton(
         modifier = modifier.fillMaxSize(), onClick = { onCLick(c) },
         shape = RectangleShape
     ) {
-        Text("$c")
+        Text(text = "$c",
+        fontSize = TextUnit(fontSizeButton, TextUnitType.Sp))
     }
 }
 
@@ -105,20 +117,39 @@ fun ButtonBackspace(modifier: Modifier = Modifier, onBackspace: () -> Job) {
     }
 }
 
+@ExperimentalComposeApi
 @Composable
 fun ButtonClear(modifier: Modifier = Modifier, onClear: () -> Job) {
     OutlinedButton(
         modifier = modifier.fillMaxSize(), onClick = { onClear() },
         shape = RectangleShape
     ) {
-        Text("C")
+        Text(text = "C",
+            fontSize = TextUnit(fontSizeButton, TextUnitType.Sp))
     }
 }
 
+@ExperimentalComposeApi
 @Composable
-fun OutputView(inputText: String, outputString: String) {
-    Column() {
-        Text(inputText)
-        Text(outputString)
+fun OutputView(modifier: Modifier = Modifier, inputText: String, outputString: String) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(4.dp)
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
+            color = Color.Black,
+            fontSize = TextUnit(50f, TextUnitType.Sp),
+            textAlign = TextAlign.Right,
+            text = inputText
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.DarkGray,
+            fontSize = TextUnit(40f, TextUnitType.Sp),
+            textAlign = TextAlign.Right,
+            text = if (inputText.isEmpty()) "" else outputString
+        )
     }
 }
