@@ -41,12 +41,29 @@ class CalculateViewModel @Inject constructor() : ViewModel() {
     suspend fun input(char: Char) {
         mutexInput.withLock {
             val str = StringBuilder(inputState.value)
-            if (str.isNotEmpty() && str.last() != '-' && str.last() in Calculator.operations) {
-                str[str.lastIndex] = char
+            if (char in Calculator.operations && (str.isEmpty() || str.last() in Calculator.operations)) {
+                if (str.isEmpty()) str.append(char) else str[str.lastIndex] = char
             } else {
                 str.append(char)
             }
             _inputState.emit(str.toString())
+        }
+    }
+
+    suspend fun clear() {
+        mutexInput.withLock {
+            if (inputState.value.isNotEmpty()) {
+                _inputState.emit("")
+            }
+        }
+    }
+
+    suspend fun backspace() {
+        mutexInput.withLock {
+            val str = inputState.value
+            if (str.isNotEmpty()) {
+                _inputState.emit(str.substring(0, str.lastIndex))
+            }
         }
     }
 

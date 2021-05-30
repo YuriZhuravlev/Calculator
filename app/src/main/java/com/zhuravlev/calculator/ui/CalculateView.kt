@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewModelScope
 import com.zhuravlev.calculator.R
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Composable
@@ -24,47 +25,48 @@ fun CalculatorView(calculatorViewModel: CalculateViewModel) {
                 outputString
             )
         }
-        Keyboard()
-        Button(onClick = {
+        Keyboard(onInput = { char ->
             calculatorViewModel.viewModelScope.launch {
-                calculatorViewModel.input('0')
+                calculatorViewModel.input(char)
             }
-        }) {
-            Text(text = "0")
-        }
+        }, onClear = {
+            calculatorViewModel.viewModelScope.launch {
+                calculatorViewModel.clear()
+            }
+        }, onBackspace = {
+            calculatorViewModel.viewModelScope.launch {
+                calculatorViewModel.backspace()
+            }
+        })
     }
 }
 
 @Composable
-fun Keyboard() {
+fun Keyboard(onInput: (char: Char) -> Job, onClear: () -> Job, onBackspace: () -> Job) {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(Modifier.weight(1f, true)) {
-            ButtonClear(modifier = Modifier.weight(1f))
-            ButtonInput('÷', modifier = Modifier.weight(1f))
-            ButtonInput('×', modifier = Modifier.weight(1f))
-            ButtonBackspace(modifier = Modifier.weight(1f))
+            ButtonClear(modifier = Modifier.weight(1f), onClear)
+            ButtonInput('÷', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('×', modifier = Modifier.weight(1f), onInput)
+            ButtonBackspace(modifier = Modifier.weight(1f), onBackspace)
         }
         Row(Modifier.weight(1f, true)) {
-            ButtonInput('7', modifier = Modifier.weight(1f))
-            ButtonInput('8', modifier = Modifier.weight(1f))
-            ButtonInput('9', modifier = Modifier.weight(1f))
-            ButtonInput('-', modifier = Modifier.weight(1f))
+            ButtonInput('7', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('8', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('9', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('-', modifier = Modifier.weight(1f), onInput)
         }
         Row(Modifier.weight(1f, true)) {
-            ButtonInput('4', modifier = androidx.compose.ui.Modifier.weight(1f))
-            ButtonInput('5', modifier = androidx.compose.ui.Modifier.weight(1f))
-            ButtonInput('6', modifier = androidx.compose.ui.Modifier.weight(1f))
-            ButtonInput('+', modifier = androidx.compose.ui.Modifier.weight(1f))
+            ButtonInput('4', modifier = androidx.compose.ui.Modifier.weight(1f), onInput)
+            ButtonInput('5', modifier = androidx.compose.ui.Modifier.weight(1f), onInput)
+            ButtonInput('6', modifier = androidx.compose.ui.Modifier.weight(1f), onInput)
+            ButtonInput('+', modifier = androidx.compose.ui.Modifier.weight(1f), onInput)
         }
         Row(Modifier.weight(1f, true)) {
-            ButtonInput('1', modifier = Modifier.weight(1f))
-            ButtonInput('2', modifier = Modifier.weight(1f))
-            ButtonInput('3', modifier = Modifier.weight(1f))
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {}
+            ButtonInput('1', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('2', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('3', modifier = Modifier.weight(1f), onInput)
+            ButtonInput(c = '(', modifier = Modifier.weight(1f), onInput)
         }
         Row(Modifier.weight(1f, true)) {
             Surface(
@@ -72,21 +74,17 @@ fun Keyboard() {
                     .fillMaxSize()
                     .weight(1f)
             ) {}
-            ButtonInput('0', modifier = Modifier.weight(1f))
-            ButtonInput('.', modifier = Modifier.weight(1f))
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {}
+            ButtonInput('0', modifier = Modifier.weight(1f), onInput)
+            ButtonInput('.', modifier = Modifier.weight(1f), onInput)
+            ButtonInput(c = ')', modifier = Modifier.weight(1f), onInput)
         }
     }
 }
 
 @Composable
-fun ButtonInput(c: Char, modifier: Modifier = Modifier) {
+fun ButtonInput(c: Char, modifier: Modifier = Modifier, onCLick: (char: Char) -> Job) {
     OutlinedButton(
-        modifier = modifier.fillMaxSize(), onClick = { },
+        modifier = modifier.fillMaxSize(), onClick = { onCLick(c) },
         shape = RectangleShape
     ) {
         Text("$c")
@@ -94,9 +92,9 @@ fun ButtonInput(c: Char, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonBackspace(modifier: Modifier = Modifier) {
+fun ButtonBackspace(modifier: Modifier = Modifier, onBackspace: () -> Job) {
     OutlinedButton(
-        modifier = modifier.fillMaxSize(), onClick = { },
+        modifier = modifier.fillMaxSize(), onClick = { onBackspace() },
         shape = RectangleShape
     ) {
         Image(
@@ -108,9 +106,9 @@ fun ButtonBackspace(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonClear(modifier: Modifier = Modifier) {
+fun ButtonClear(modifier: Modifier = Modifier, onClear: () -> Job) {
     OutlinedButton(
-        modifier = modifier.fillMaxSize(), onClick = { },
+        modifier = modifier.fillMaxSize(), onClick = { onClear() },
         shape = RectangleShape
     ) {
         Text("C")
