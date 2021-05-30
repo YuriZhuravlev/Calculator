@@ -93,4 +93,19 @@ class ExampleUnitTest {
     fun checkCalculator14() {
         assertEquals(Calculator.calculate("-(-(-(-(-(-5)))))"), (5.0).toString())
     }
+
+    @Test
+    fun checkCalculator15() {
+        assertEquals(Calculator.calculate("(3)-9"), "-6.0")
+    }
+
+    @Test
+    fun checkCalculator16() {
+        assertEquals(Calculator.calculate("(3)-9+"), "Error")
+    }
+
+    @Test
+    fun checkCalculator17() {
+        assertEquals(Calculator.calculate("(3)-"), "Error")
+    }
 }

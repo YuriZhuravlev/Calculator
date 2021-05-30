@@ -63,7 +63,7 @@ object Calculator {
             if (lastOperation && str[i] == '-') {
                 str[i] = '~'
             } else {
-                lastOperation = str[i] !in numberSet
+                lastOperation = str[i] !in numberSet && str[i] != ')'
             }
         }
 
