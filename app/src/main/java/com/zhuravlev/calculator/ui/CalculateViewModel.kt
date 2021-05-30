@@ -3,6 +3,7 @@ package com.zhuravlev.calculator.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zhuravlev.calculator.calc.Calculator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +11,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
-class CalculateViewModel : ViewModel() {
+@HiltViewModel
+class CalculateViewModel @Inject constructor() : ViewModel() {
     private val mutexInput = Mutex()
     private val mutexOutput = Mutex()
 
@@ -25,9 +28,11 @@ class CalculateViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             mutexOutput.withLock {
                 inputState.collect {
-                    _outputState.emit(Calculator.calculate(
-                        it.simpleCheckBrackets()
-                    ))
+                    _outputState.emit(
+                        Calculator.calculate(
+                            it.simpleCheckBrackets()
+                        )
+                    )
                 }
             }
         }
@@ -55,14 +60,15 @@ class CalculateViewModel : ViewModel() {
             when (it) {
                 '(' -> i++
                 ')' -> i--
-                else -> {}
+                else -> {
+                }
             }
         }
         if (i == 0) {
             return this
         }
         val str = StringBuilder(this)
-        while (i-->0) {
+        while (i-- > 0) {
             str.append(')')
         }
         return str.toString()
