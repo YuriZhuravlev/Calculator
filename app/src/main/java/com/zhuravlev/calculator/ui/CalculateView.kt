@@ -142,14 +142,16 @@ fun OutputView(modifier: Modifier = Modifier, inputText: String, outputString: S
             color = Color.Black,
             fontSize = TextUnit(50f, TextUnitType.Sp),
             textAlign = TextAlign.Right,
-            text = inputText
+            text = inputText,
+            maxLines = 1
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             color = Color.DarkGray,
             fontSize = TextUnit(40f, TextUnitType.Sp),
             textAlign = TextAlign.Right,
-            text = if (inputText.isEmpty()) "" else outputString
+            text = if (inputText.isEmpty()) "" else outputString,
+            maxLines = 1
         )
     }
 }
